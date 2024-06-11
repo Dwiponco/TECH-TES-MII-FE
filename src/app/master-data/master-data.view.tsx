@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MasterDataEditModal from './local-component/master-data.edit.modal';
 import MasterDatatable from './local-component/master-data.table';
 import { Button, Input, Space } from 'antd';
 import { Plus } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
+import { geojson } from '@/constants/gejson';
 
 export interface Item {
     key: string;
@@ -11,18 +12,6 @@ export interface Item {
     ruas: string;
     unit_kerja: string;
     status: boolean;
-}
-
-const originData: Item[] = [];
-
-for (let i = 0; i < 8; i++) {
-    originData.push({
-        key: i.toString(),
-        no: i,
-        ruas: `Ruas ${i}`,
-        unit_kerja: `Unit kerja ${i}`,
-        status: Math.random() >= 0.5,
-    });
 }
 
 const defaultItem: Item = {
@@ -33,8 +22,9 @@ const defaultItem: Item = {
     status: false,
 };
 
-const MasterDataView = () => {
-    const [data, setData] = useState<Item[]>(originData);
+const MasterDataPage = () => {
+
+    const [data, setData] = useState<Item[]>([]);
     const [isModal, setIsModal] = useState(false);
     const [detailData, setDetailData] = useState<Item>(defaultItem);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -78,6 +68,23 @@ const MasterDataView = () => {
         );
     };
 
+    useEffect(() => {
+        if (geojson && geojson.features && geojson.features.length > 0) {
+            // @ts-ignore
+            setData(
+                geojson.features.map((feature) => {
+                    console.log("feature.properties.status : ", feature.properties.status)
+                    return {
+                        key: feature.properties.objectid.toString(),
+                        no: feature.properties.no,
+                        ruas: feature.properties.ruas,
+                        unit_kerja: feature.properties.region,
+                        status: feature.properties.status === "Operasi",
+                    }
+                }));
+        }
+    }, []);
+
     return (
         <div className="md:container px-4 m-auto py-8 max-w-full">
             <div className='flex justify-end mb-3'>
@@ -98,11 +105,13 @@ const MasterDataView = () => {
                     <span>Tambah Data</span>
                 </Button>
             </div>
+
             <MasterDatatable
                 data={data}
                 onOpenModal={handleOpenModal}
                 onDelete={handleDelete}
             />
+
             <MasterDataEditModal
                 isModal={isModal}
                 isModalAction={handleModalAction}
@@ -113,4 +122,4 @@ const MasterDataView = () => {
     );
 };
 
-export default MasterDataView;
+export { MasterDataPage };

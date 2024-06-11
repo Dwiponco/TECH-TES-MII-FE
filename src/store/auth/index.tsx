@@ -39,7 +39,6 @@ const useAuthContext = () => {
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     const [SESSION, setSessionStorage] = useLocalStorage("jasamarga", JSON.stringify(InitialSessionValue.session));
-    console.log("SESSION : ",SESSION)
 
     const session = SESSION ? JSON.parse(SESSION) : InitialSessionValue.session;
 

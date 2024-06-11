@@ -6,5 +6,3 @@ const DashboardPage = LazyComponents({
 })
 
 export { DashboardPage }
-
-// https://data.pu.go.id/sites/default/files/geojson/ast_bpjt_tol_operasi.geojson

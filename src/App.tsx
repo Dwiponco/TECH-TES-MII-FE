@@ -4,8 +4,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { LayoutDashboard } from './components/layout/layout-dashboard';
 import { AuthenticationPage } from './app/login';
 import { NotFound } from './app/404/404.view';
-import DashboardPage from './app/dashboard/dahsboard.view';
-import MasterDataView from './app/master-data/master-data.view';
+import { MasterDataPage, MasterDataDetail } from './app/master-data';
+import { DashboardPage } from './app/dashboard';
 
 const router = createBrowserRouter([
   {
@@ -19,7 +19,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard/master-data",
-        element: <MasterDataView />,
+        element: <MasterDataPage />,
+      },
+      {
+        path: "/dashboard/master-data/:id",
+        element: <MasterDataDetail />,
       }
     ],
   },

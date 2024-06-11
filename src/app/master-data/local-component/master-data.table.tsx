@@ -2,6 +2,7 @@ import { Table, Button } from 'antd';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { Item } from '../master-data.view';
 import { ColumnsType } from 'antd/es/table';
+import { useNavigate } from 'react-router-dom';
 
 interface MasterDatatableProps {
     data: Item[];
@@ -11,6 +12,8 @@ interface MasterDatatableProps {
 
 const MasterDatatable = (props: MasterDatatableProps) => {
     const { data, onOpenModal, onDelete } = props
+    const navigate = useNavigate();
+
     const columns: ColumnsType<Item> = [
         {
             title: 'No',
@@ -46,7 +49,7 @@ const MasterDatatable = (props: MasterDatatableProps) => {
                     <Button onClick={() => onOpenModal(record)}>
                         <Pencil />
                     </Button>
-                    <Button>
+                    <Button onClick={() => { navigate("/dashboard/master-data/" + record.key) }}>
                         <Eye />
                     </Button>
                     <Button disabled={!record.status} onClick={() => onDelete(record.key)}>

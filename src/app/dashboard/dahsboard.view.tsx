@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [map, setMap] = useState<any>(null);
 
   useEffect(() => {
@@ -146,4 +146,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export { DashboardPage };

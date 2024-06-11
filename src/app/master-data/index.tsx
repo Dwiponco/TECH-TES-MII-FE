@@ -5,4 +5,9 @@ const MasterDataPage = LazyComponents({
   moduleSelector: (module) => module.MasterDataPage
 })
 
-export { MasterDataPage }
+const MasterDataDetail = LazyComponents({
+  importComponent: () => import('@/app/master-data/master-data.detail'),
+  moduleSelector: (module) => module.MasterDataDetail
+})
+
+export { MasterDataPage, MasterDataDetail }

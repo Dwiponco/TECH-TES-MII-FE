@@ -31,7 +31,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ menuItems }) => {
     const location = useLocation();
-    const { setSessionStorage } = useAuthContext()
+    const { session, setSessionStorage } = useAuthContext()
     const isItemActive = (itemPath: string) => {
         return location.pathname === itemPath || location.pathname.startsWith(itemPath + '/');
     };
@@ -42,6 +42,10 @@ const Navbar: React.FC<NavbarProps> = ({ menuItems }) => {
             data: {
                 token: "",
                 expired_at: 0,
+                user_info: {
+                    username: '',
+                    role: ''
+                }
             }
         }))
         window.location.href = '/'
@@ -119,7 +123,12 @@ const Navbar: React.FC<NavbarProps> = ({ menuItems }) => {
                         />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className='w-[200px] bg-white'>
-                        <DropdownMenuLabel>Admin</DropdownMenuLabel>
+                        <DropdownMenuLabel>
+                            <div>
+                                <p>{session.data.user_info.role}</p>
+                                <p className="text-xs font-light">{session.data.user_info.username}</p>
+                            </div>
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <NavLink to={'/'} onClick={() => handleLogout()}>
@@ -138,7 +147,6 @@ const Navbar: React.FC<NavbarProps> = ({ menuItems }) => {
                         <SlidersHorizontal />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className='w-[200px] bg-white'>
-                        <DropdownMenuLabel>Menu</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <NavLink to={'/'} onClick={() => handleLogout()}>

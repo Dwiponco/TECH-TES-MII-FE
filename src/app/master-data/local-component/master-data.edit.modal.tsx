@@ -11,7 +11,6 @@ interface MasterDataEditModalProps {
 
 const MasterDataEditModal = (props: MasterDataEditModalProps) => {
     const { isModal, isModalAction, detailData, onSave } = props
-    console.log("detailData ", detailData)
     const [form] = Form.useForm();
 
     useEffect(() => {

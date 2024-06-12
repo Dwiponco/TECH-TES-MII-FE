@@ -1,52 +1,64 @@
-import { SessionProps } from "@/types/auth/auth"
-import { useLocalStorage } from "@reactuses/core"
-import { ReactNode, createContext, useContext } from "react"
+import { ReactNode, createContext, useContext } from "react";
+import { useLocalStorage } from "@reactuses/core";
+
+type Status = "loading" | "authenticated" | "unauthenticated";
+
+interface SessionProps {
+  token: string;
+  expired_at: number;
+  user_info: {
+    id: string
+    username: string
+    role: string
+  };
+}
 
 interface AuthContextProps {
-    session: {
-        status: string
-        data: SessionProps
-    }
-    setSessionStorage: React.Dispatch<React.SetStateAction<null | string>>;
+  session: {
+    status: Status;
+    data: SessionProps;
+  };
+  setSessionStorage: React.Dispatch<React.SetStateAction<null | string>>;
 }
 
 interface AuthContextProviderProps {
-    children: ReactNode
+  children: ReactNode;
 }
 
 const InitialSessionValue: AuthContextProps = {
-    session: {
-        status: 'unauthenticated',
-        data: {
-            token: "",
-            expires_at: 0,
-            user_info: {
-                username: "",
-                status: false
-            }
-        }
-    },
-    setSessionStorage: () => { }
-}
+  session: {
+    status: "unauthenticated",
+    data: {
+      token: "",
+      expired_at: 0,
+      user_info: {
+        id: '',
+        username: '',
+        role: ''
+      }
+    }
+  },
+  setSessionStorage: () => { },
+};
 
-const AuthContext = createContext<AuthContextProps | null>(null)
+const AuthContext = createContext<AuthContextProps | null>(null);
 
 const useAuthContext = () => {
-    const contex = useContext(AuthContext)
-    if (!contex) throw "Must be under the Auth Provider"
-    return contex
-}
+  const context = useContext(AuthContext);
+  if (!context) throw "Must be under the Auth Provider";
+  return context;
+};
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-    const [SESSION, setSessionStorage] = useLocalStorage("jasamarga", JSON.stringify(InitialSessionValue.session));
+  const [SESSION, setSessionStorage] = useLocalStorage("vat", JSON.stringify(InitialSessionValue.session));
 
-    const session = SESSION ? JSON.parse(SESSION) : InitialSessionValue.session;
+  const session = SESSION ? JSON.parse(SESSION) : InitialSessionValue.session;
 
-    return (
-        <AuthContext.Provider value={{ session, setSessionStorage }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ session, setSessionStorage }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export { useAuthContext, AuthContextProvider };

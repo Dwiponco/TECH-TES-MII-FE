@@ -13,7 +13,7 @@ const UserAuthForm = () => {
   const onSubmit = async (
     values: { username: string, password: string }
   ) => {
-    console.log("values : ",values)
+    console.log("values : ", values)
     try {
       setSessionStorage(
         JSON.stringify({
@@ -22,8 +22,8 @@ const UserAuthForm = () => {
             token: "xzy",
             expires_at: 123232,
             user_info: {
-              username: "user",
-              status: true
+              username: "dwiponcoutomo",
+              role: "admin",
             }
           },
         })
@@ -39,7 +39,7 @@ const UserAuthForm = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setSessionStorage(
       JSON.stringify({
         status: "unauthenticated",
@@ -48,29 +48,35 @@ const UserAuthForm = () => {
           expires_at: 0,
           user_info: {
             username: "",
-            status: true
+            role: "",
           }
         },
       })
     );
-  },[])
+    localStorage.clear()
+  }, [])
+  
   return (
     <div
-      className=" bg-gray-100 p-2 rounded-[10px]"
+      className=" bg-[#08448e] p-4 rounded-[10px]"
     >
       <Form
         layout='vertical'
         onFinish={onSubmit}
+        className="text-white read"
+        requiredMark={false}
       >
-        <Form.Item label="Username" name={"username"}>
+        <Form.Item label={<span className=" text-white">Username</span>} name={"username"} rules={[{ required: true, message: 'Username is required' }]}>
           <Input />
         </Form.Item>
-        <Form.Item label="Password" name={"password"}>
+        <Form.Item label={<span className=" text-white">Password</span>} name={"password"} rules={[{ required: true, message: 'Password is required' }]}>
           <Input.Password />
         </Form.Item>
-        <Button htmlType="submit">
-          Login
-        </Button>
+        <Form.Item className="flex justify-center mb-0">
+          <Button htmlType="submit" className=" items-center">
+            Login
+          </Button>
+        </Form.Item>
       </Form>
     </div>
   )

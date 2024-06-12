@@ -73,7 +73,6 @@ const MasterDataPage = () => {
             // @ts-ignore
             setData(
                 geojson.features.map((feature) => {
-                    console.log("feature.properties.status : ", feature.properties.status)
                     return {
                         key: feature.properties.objectid.toString(),
                         no: feature.properties.no,

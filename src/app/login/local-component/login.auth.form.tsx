@@ -1,11 +1,10 @@
-import { useToast } from "@/components/ui/use-toast";
 import { useAuthContext } from "@/store/auth";
-import { Button, Form, Input } from "antd"
+import { Button, Form, Input, message } from "antd"
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
 
 const UserAuthForm = () => {
-  const { toast } = useToast()
 
   const navigate = useNavigate()
   const { setSessionStorage } = useAuthContext()
@@ -13,30 +12,31 @@ const UserAuthForm = () => {
   const onSubmit = async (
     values: { username: string, password: string }
   ) => {
-    console.log("values : ", values)
-    try {
-      setSessionStorage(
-        JSON.stringify({
-          status: "authenticated",
-          data: {
-            token: "xzy",
-            expires_at: 123232,
-            user_info: {
-              username: "dwiponcoutomo",
-              role: "admin",
-            }
-          },
-        })
-      );
+    const url = import.meta.env.VITE_API_DOMAIN + "/login"
+    axios.post(url, values)
+      .then(response => {
+        setSessionStorage(
+          JSON.stringify({
+            status: "authenticated",
+            data: {
+              token: response.data.access_token,
+              expires_at: response.data.expires_in,
+              user_info: {
+                username: "dwiponcoutomo",
+                role: "admin",
+              }
+            },
+          })
+        );
 
-      navigate("/dashboard/home");
-    }
-    catch (_error) {
-      toast({
-        title: "Failed",
-        description: "Please Try again",
+        message.success("Login Success")
+        setTimeout(() => {
+          navigate("/dashboard/home");
+        }, 1000);
       })
-    }
+      .catch(error => {
+        console.log("error : ", error)
+      })
   };
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const UserAuthForm = () => {
     );
     localStorage.clear()
   }, [])
-  
+
   return (
     <div
       className=" bg-[#08448e] p-4 rounded-[10px]"
@@ -65,6 +65,10 @@ const UserAuthForm = () => {
         onFinish={onSubmit}
         className="text-white read"
         requiredMark={false}
+        initialValues={{
+          username:'admin',
+          password:123
+        }}
       >
         <Form.Item label={<span className=" text-white">Username</span>} name={"username"} rules={[{ required: true, message: 'Username is required' }]}>
           <Input />

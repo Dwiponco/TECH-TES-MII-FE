@@ -27,7 +27,7 @@ export const LayoutDashboard: React.FC = () => {
           <div className="sticky top-0 z-10">
             <Navbar menuItems={menuItems} />
           </div>
-          <div>
+          <div className="md:container px-2 m-auto py-8 max-w-full">
             <Outlet />
           </div>
         </div>

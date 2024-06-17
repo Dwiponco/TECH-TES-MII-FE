@@ -6,6 +6,7 @@ import { AuthenticationPage } from './app/login';
 import { NotFound } from './app/404/404.view';
 import { MasterDataPage, MasterDataDetail } from './app/master-data';
 import { DashboardPage } from './app/dashboard';
+import { LoadingContextProvider } from './store/loading';
 
 const router = createBrowserRouter([
   {
@@ -37,7 +38,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <AuthContextProvider>
-      <RouterProvider router={router} />
+      <LoadingContextProvider>
+        <RouterProvider router={router} />
+      </LoadingContextProvider>
     </AuthContextProvider>
   )
 }

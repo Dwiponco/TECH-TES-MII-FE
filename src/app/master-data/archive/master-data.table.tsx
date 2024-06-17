@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 interface MasterDatatableProps {
     data: Item[];
     onOpenModal: (record: Item) => void;
-    onDelete: (key: string) => void;
+    onDelete: (no: number) => void;
 }
 
 const MasterDatatable = (props: MasterDatatableProps) => {
@@ -49,10 +49,10 @@ const MasterDatatable = (props: MasterDatatableProps) => {
                     <Button onClick={() => onOpenModal(record)}>
                         <Pencil />
                     </Button>
-                    <Button onClick={() => { navigate("/dashboard/master-data/" + record.key) }}>
+                    <Button onClick={() => { navigate("/dashboard/master-data/" + record.no) }}>
                         <Eye />
                     </Button>
-                    <Button disabled={!record.status} onClick={() => onDelete(record.key)}>
+                    <Button disabled={!record.status} onClick={() => onDelete(record.no)}>
                         <Trash2 />
                     </Button>
                 </div >

@@ -1,0 +1,26 @@
+.ant-modal-wrap .ant-modal-loading .ant-modal-content {
+	background: none;
+	border: none;
+	box-shadow: none;
+}
+
+.ant-modal-wrap .ant-modal-loading .ant-modal-content .ant-modal-body {
+	display: flex;
+	place-content: center;
+}
+
+/* SPINER ANTD */
+.ant-spin .ant-spin-dot-item {
+	background-color: #9e9e9e;
+}
+
+/* LOADING ANIMATE */
+.loader-animate {
+	width: 48px;
+	height: 48px;
+	display: inline-block;
+	position: relative;
+	background: #45128e;
+	box-sizing: border-box;
+	animation: flipX 1s linear infinite;
+}

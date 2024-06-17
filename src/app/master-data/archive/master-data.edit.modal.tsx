@@ -33,7 +33,7 @@ const MasterDataEditModal = (props: MasterDataEditModalProps) => {
 
     return (
         <Modal
-            title={detailData.key ? "Edit Data" : "Add Data"}
+            title={detailData.no ? "Edit Data" : "Add Data"}
             open={isModal}
             onCancel={isModalAction}
             footer={[

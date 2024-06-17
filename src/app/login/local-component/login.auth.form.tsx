@@ -3,15 +3,18 @@ import { Button, Form, Input, message } from "antd"
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import { useLoadingContext } from "@/store/loading";
+import Loading from "@/components/layout/loading";
 
 const UserAuthForm = () => {
-
+  const { loading, startLoading, stopLoading } = useLoadingContext();
   const navigate = useNavigate()
   const { setSessionStorage } = useAuthContext()
 
   const onSubmit = async (
     values: { username: string, password: string }
   ) => {
+    startLoading()
     const url = import.meta.env.VITE_API_DOMAIN + "/login"
     axios.post(url, values)
       .then(response => {
@@ -37,6 +40,7 @@ const UserAuthForm = () => {
       .catch(error => {
         console.log("error : ", error)
       })
+      .finally(() => { stopLoading() })
   };
 
   useEffect(() => {
@@ -60,14 +64,17 @@ const UserAuthForm = () => {
     <div
       className=" bg-[#08448e] p-4 rounded-[10px]"
     >
+      {
+        loading && (<Loading />)
+      }
       <Form
         layout='vertical'
         onFinish={onSubmit}
         className="text-white read"
         requiredMark={false}
         initialValues={{
-          username:'admin',
-          password:123
+          username: 'admin',
+          password: 123
         }}
       >
         <Form.Item label={<span className=" text-white">Username</span>} name={"username"} rules={[{ required: true, message: 'Username is required' }]}>

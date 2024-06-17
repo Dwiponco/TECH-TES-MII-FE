@@ -5,6 +5,8 @@ import { Button, Input, Modal, Space } from 'antd';
 import { Plus } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 import { addRuas, deleteRuas, getAllRuas, updateRuas } from './local-service/service';
+import { useLoadingContext } from '@/store/loading';
+import Loading from '@/components/layout/loading';
 
 export interface Item {
     id: number;
@@ -31,6 +33,8 @@ const defaultItem: Item = {
 };
 
 const MasterDataPage = () => {
+    const { loading, startLoading, stopLoading } = useLoadingContext();
+
     const [data, setData] = useState<Item[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [isModal, setIsModal] = useState(false);
@@ -54,6 +58,7 @@ const MasterDataPage = () => {
     };
 
     const handleAddRuas = (updatedData: FormData) => {
+        startLoading()
         addRuas(updatedData)
             .then(response => {
                 const { data, status, message } = response.data;
@@ -89,11 +94,13 @@ const MasterDataPage = () => {
                         )
                     });
                 }
-            });
+            })
+            .finally(() => { stopLoading() })
         handleModalAction();
     };
 
     const handleUpdateRuas = (id: number, updatedData: FormData) => {
+        startLoading()
         updateRuas(id, updatedData)
             .then(response => {
                 const { data, status, message } = response.data;
@@ -128,7 +135,8 @@ const MasterDataPage = () => {
                         )
                     });
                 }
-            });
+            })
+            .finally(() => { stopLoading() })
         handleModalAction();
     };
 
@@ -141,6 +149,7 @@ const MasterDataPage = () => {
     };
 
     const fetchData = (page: number, pageSize: number) => {
+        startLoading()
         const params = {
             per_page: pageSize,
             page: page
@@ -163,7 +172,8 @@ const MasterDataPage = () => {
             })
             .catch(error => {
                 console.log("error ", error);
-            });
+            })
+            .finally(() => { stopLoading() })
     };
 
     const handleDelete = (dataDelete: Item) => {
@@ -210,6 +220,9 @@ const MasterDataPage = () => {
 
     return (
         <div>
+            {
+                loading && (<Loading />)
+            }
             <div className='flex justify-end mb-3'>
                 <Space className={`mr-3 px-3 ${isSearchVisible ? '' : 'border rounded'}`}>
                     {isSearchVisible ? (

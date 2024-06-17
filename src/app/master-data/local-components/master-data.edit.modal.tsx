@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Form, Modal, Switch, Input, Button, Upload, Col, Row } from 'antd';
 import { Item } from '../master-data.view';
 import { GetOneRuas } from '../local-service/service';
+import { useLoadingContext } from '@/store/loading';
+import Loading from '@/components/layout/loading';
 
 interface MasterDataEditModalProps {
     isModal: boolean;
@@ -11,6 +13,7 @@ interface MasterDataEditModalProps {
 }
 
 const MasterDataEditModal = (props: MasterDataEditModalProps) => {
+    const { loading, startLoading, stopLoading } = useLoadingContext();
     const { isModal, isModalAction, detailData, onSave } = props;
     const [form] = Form.useForm();
     const [photoFile, setPhotoFile] = useState<any[]>([]);
@@ -18,6 +21,7 @@ const MasterDataEditModal = (props: MasterDataEditModalProps) => {
 
     const handleGetOneRuas = () => {
         if (isModal && detailData.id) {
+            startLoading()
             GetOneRuas(detailData.id)
                 .then(response => {
                     const { data, status } = response.data;
@@ -35,6 +39,7 @@ const MasterDataEditModal = (props: MasterDataEditModalProps) => {
                         content: "Failed get data. Please try again or contact our support."
                     })
                 })
+                .finally(() => { stopLoading() })
         }
     };
 
@@ -90,134 +95,139 @@ const MasterDataEditModal = (props: MasterDataEditModalProps) => {
     };
 
     return (
-        <Modal
-            title={detailData.id ? 'Edit Data' : 'Add Data'}
-            open={isModal}
-            onCancel={handleCancel}
-            footer={[
-                <Button key="cancel" onClick={() => {
-                    isModalAction()
-                    form.resetFields()
-                }}>
-                    Cancel
-                </Button>,
-                <Button key="save" type="primary" onClick={handleSave}>
-                    Save
-                </Button>,
-            ]}
-            width={900}
-        >
-            <Form
-                form={form}
-                layout="vertical"
+        <Fragment>
+            {
+                loading && (<Loading />)
+            }
+            <Modal
+                title={detailData.id ? 'Edit Data' : 'Add Data'}
+                open={isModal}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={() => {
+                        isModalAction()
+                        form.resetFields()
+                    }}>
+                        Cancel
+                    </Button>,
+                    <Button key="save" type="primary" onClick={handleSave}>
+                        Save
+                    </Button>,
+                ]}
+                width={900}
             >
-                <Row gutter={32}>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Ruas"
-                            name="ruas_name"
-                            rules={[{ required: true, message: 'Ruas is required' }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label="Lokasi Awal"
-                            name="km_awal"
-                            rules={[{ required: true, message: 'Lokasi Awal is required' }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label="Lokasi Akhir"
-                            name="km_akhir"
-                            rules={[{ required: true, message: 'Lokasi Akhir is required' }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Panjang"
-                            name="long"
-                            rules={[{ required: true, message: 'Panjang is required' }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label="Unit Kerja"
-                            name="unit_id"
-                            rules={[{ required: true, message: 'Unit Kerja is required' }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label="Status"
-                            name="status"
-                            valuePropName="checked"
-                            initialValue={detailData.status === "1"}
-                        >
-                            <Switch />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={32}>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Upload Foto"
-                            valuePropName='fileDoc'
-                            name={"fileDoc"}
-                            rules={[
-                                {
-                                    required: !detailData.id,
-                                    message: 'Foto is required'
-                                }
-                            ]}
-                        >
-                            <Upload
-                                maxCount={1}
-                                beforeUpload={() => false}
-                                onChange={(e) => setPhotoFile(e.fileList)}
-                                onRemove={() => {
-                                    setPhotoFile([]);
-                                }}
-                                accept="image/jpeg,image/jpg,image/bmp,image/png,image/gif"
+                <Form
+                    form={form}
+                    layout="vertical"
+                >
+                    <Row gutter={32}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Ruas"
+                                name="ruas_name"
+                                rules={[{ required: true, message: 'Ruas is required' }]}
                             >
-                                <Button>Pilih Foto</Button>
-                            </Upload>
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Upload Dokumen"
-                            valuePropName='docFile'
-                            name={"docFile"}
-                            getValueFromEvent={getFile}
-                            rules={[
-                                {
-                                    required: !detailData.id,
-                                    message: 'Dokumen is required'
-                                }
-                            ]}
-                        >
-                            <Upload
-                                maxCount={1}
-                                beforeUpload={() => false}
-                                onChange={(e) => setDocFile(e.fileList)}
-                                onRemove={() => {
-                                    setDocFile([]);
-                                }}
-                                accept="application/pdf,
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                label="Lokasi Awal"
+                                name="km_awal"
+                                rules={[{ required: true, message: 'Lokasi Awal is required' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                label="Lokasi Akhir"
+                                name="km_akhir"
+                                rules={[{ required: true, message: 'Lokasi Akhir is required' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Panjang"
+                                name="long"
+                                rules={[{ required: true, message: 'Panjang is required' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                label="Unit Kerja"
+                                name="unit_id"
+                                rules={[{ required: true, message: 'Unit Kerja is required' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                label="Status"
+                                name="status"
+                                valuePropName="checked"
+                                initialValue={detailData.status === "1"}
+                            >
+                                <Switch />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={32}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Upload Foto"
+                                valuePropName='fileDoc'
+                                name={"fileDoc"}
+                                rules={[
+                                    {
+                                        required: !detailData.id,
+                                        message: 'Foto is required'
+                                    }
+                                ]}
+                            >
+                                <Upload
+                                    maxCount={1}
+                                    beforeUpload={() => false}
+                                    onChange={(e) => setPhotoFile(e.fileList)}
+                                    onRemove={() => {
+                                        setPhotoFile([]);
+                                    }}
+                                    accept="image/jpeg,image/jpg,image/bmp,image/png,image/gif"
+                                >
+                                    <Button>Pilih Foto</Button>
+                                </Upload>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Upload Dokumen"
+                                valuePropName='docFile'
+                                name={"docFile"}
+                                getValueFromEvent={getFile}
+                                rules={[
+                                    {
+                                        required: !detailData.id,
+                                        message: 'Dokumen is required'
+                                    }
+                                ]}
+                            >
+                                <Upload
+                                    maxCount={1}
+                                    beforeUpload={() => false}
+                                    onChange={(e) => setDocFile(e.fileList)}
+                                    onRemove={() => {
+                                        setDocFile([]);
+                                    }}
+                                    accept="application/pdf,
                                 application/vnd.openxmlformats-officedocument.wordprocessingml.document,
                                 application/vnd.openxmlformats-officedocument.presentationml.presentation,
                                 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                            >
-                                <Button>Pilih Dokumen</Button>
-                            </Upload>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Modal>
+                                >
+                                    <Button>Pilih Dokumen</Button>
+                                </Upload>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Modal>
+        </Fragment>
     );
 };
 

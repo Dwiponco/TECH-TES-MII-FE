@@ -5,14 +5,19 @@ import PieChartComponent from "./local-components/dashboard.piechart"
 import { Col, Row } from "antd"
 import DashboardTable from "./local-components/dashboard.table"
 import { DashboardDataRuasType, DashboardDataType } from "./local-type/dashboard.type"
+import { useLoadingContext } from "@/store/loading"
+import Loading from "@/components/layout/loading"
 
 const DashboardPage = () => {
+  const { loading, startLoading, stopLoading } = useLoadingContext();
+
   const [data, setData] = useState<DashboardDataType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [ruasData, setRuasData] = useState<any[]>([]);
 
   const handlingGetAllUnitKerja = () => {
+    startLoading()
     getAllUnitKerja()
       .then(response => {
         const { data, status } = response.data
@@ -32,6 +37,12 @@ const DashboardPage = () => {
           setRuasData(allRuas);
         }
       })
+      .catch((error)=>{
+        console.log(error)
+      })
+      .finally(()=>{
+        stopLoading()
+      })
   }
 
   useEffect(() => {
@@ -40,6 +51,9 @@ const DashboardPage = () => {
 
   return (
     <div>
+      {
+        loading && (<Loading/>)
+      }
       <Row gutter={32}>
         <Col lg={14} md={24} xs={24}>
           <BarChartComponent

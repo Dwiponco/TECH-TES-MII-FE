@@ -1,26 +1,20 @@
 import { Table, Button } from 'antd';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
-import { Item } from '../master-data.view';
 import { ColumnsType } from 'antd/es/table';
-import { useNavigate } from 'react-router-dom';
 import { createStringColumn, createActionColumn } from '../../../components/table/createColumn';
+import { DashboardDataType } from '../local-type/dashboard.type';
 
-interface MasterDatatableProps {
-    data: Item[];
-    totalItems: number;
-    onOpenModal: (record: Item) => void;
-    onDelete: (record: Item) => void;
+interface DashboardTableProps {
+    data: DashboardDataType[];
     currentPage: number;
     pageSize: number;
     setCurrentPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
 }
 
-const MasterDatatable = (props: MasterDatatableProps) => {
-    const { data, totalItems, onOpenModal, onDelete, currentPage, pageSize, setCurrentPage, setPageSize } = props;
-    const navigate = useNavigate();
+const DashboardTable = (props: DashboardTableProps) => {
+    const { data, currentPage, pageSize, setCurrentPage, setPageSize } = props;
 
-    const columns: ColumnsType<Item> = [
+    const columns: ColumnsType<DashboardDataType> = [
         {
             ...createStringColumn(
                 "No",
@@ -89,29 +83,6 @@ const MasterDatatable = (props: MasterDatatableProps) => {
                 "status_convert",
                 "status_convert"
             )
-        },
-        {
-            ...createActionColumn(
-                "Aksi",
-                "aksi",
-                "aksi",
-                false,
-                false,
-                false,
-                (_: any, record: Item) => (
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button onClick={() => onOpenModal(record)}>
-                            <Pencil />
-                        </Button>
-                        <Button onClick={() => { navigate("/dashboard/master-data/" + record.id) }}>
-                            <Eye />
-                        </Button>
-                        <Button disabled={!record.status} onClick={() => onDelete(record)}>
-                            <Trash2 />
-                        </Button>
-                    </div>
-                )
-            )
         }
     ];
 
@@ -130,7 +101,6 @@ const MasterDatatable = (props: MasterDatatableProps) => {
                 pagination={{
                     current: currentPage,
                     pageSize: pageSize,
-                    total: totalItems,
                     pageSizeOptions: ['5', '10', '20'],
                     showSizeChanger: true
                 }}
@@ -140,4 +110,4 @@ const MasterDatatable = (props: MasterDatatableProps) => {
     );
 };
 
-export default MasterDatatable;
+export default DashboardTable;

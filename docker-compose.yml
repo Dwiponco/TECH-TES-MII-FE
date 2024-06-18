@@ -1,0 +1,15 @@
+version: '3'
+services:
+  fe-jasamarga-image:
+    container_name: fe-jasamarga-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev"

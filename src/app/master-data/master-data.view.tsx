@@ -7,6 +7,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { addRuas, deleteRuas, getAllRuas, updateRuas } from './local-service/service';
 import { useLoadingContext } from '@/store/loading';
 import Loading from '@/components/layout/loading';
+import MasterDataDetailModal from './local-components/master-data.detail.modal';
 
 export interface Item {
     id: number;
@@ -37,7 +38,8 @@ const MasterDataPage = () => {
 
     const [data, setData] = useState<Item[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
-    const [isModal, setIsModal] = useState(false);
+    const [isModalAction, setIsModalAction] = useState(false);
+    const [isModalDetail, setIsModalDetail] = useState(false);
     const [detailData, setDetailData] = useState<Item>(defaultItem);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -49,11 +51,21 @@ const MasterDataPage = () => {
 
     const handleOpenModal = (record: Item | null) => {
         setDetailData(record ?? defaultItem);
-        setIsModal(true);
+        setIsModalAction(true);
+    };
+
+    const handleOpenModalDetail = (record: Item | null) => {
+        setDetailData(record ?? defaultItem);
+        setIsModalDetail(true);
     };
 
     const handleModalAction = () => {
-        setIsModal(false);
+        setIsModalAction(false);
+        setDetailData(defaultItem);
+    };
+
+    const handleModalDetail = () => {
+        setIsModalDetail(false);
         setDetailData(defaultItem);
     };
 
@@ -246,6 +258,7 @@ const MasterDataPage = () => {
                 data={data}
                 totalItems={totalItems}
                 onOpenModal={handleOpenModal}
+                onOpenModalDetail={handleOpenModalDetail}
                 onDelete={handleDelete}
                 currentPage={currentPage}
                 pageSize={pageSize}
@@ -254,10 +267,16 @@ const MasterDataPage = () => {
             />
 
             <MasterDataEditModal
-                isModal={isModal}
+                isModal={isModalAction}
                 isModalAction={handleModalAction}
                 detailData={detailData}
                 onSave={handleSave}
+            />
+
+            <MasterDataDetailModal
+                isModal={isModalDetail}
+                isModalAction={handleModalDetail}
+                detailData={detailData}
             />
         </div>
     );
